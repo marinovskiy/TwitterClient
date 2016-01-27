@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TwitterClient</string>
+    <string name="action_settings">Settings</string>
+    <string name="image_description_small">Small avatar</string>
+
+    <string name="some_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Suspendisse molestie vel arcu in euismod. Nam imperdiet ultricies nisl, vel auctor velit
+        egestas ac. Donec nulla dolor, ullamcorper ut laoreet quis, iaculis sit amet purus.</string>
+    <string name="image_description_tweet_image">Tweet image</string>
+</resources>
