@@ -9,7 +9,7 @@ public class Tweet {
 
     private String message;
 
-    private String owner;
+    private User user;
 
     private int reTweetCount;
 
@@ -35,12 +35,12 @@ public class Tweet {
         this.message = message;
     }
 
-    public String getOwner() {
-        return owner;
+    public User getUser() {
+        return user;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getReTweetCount() {

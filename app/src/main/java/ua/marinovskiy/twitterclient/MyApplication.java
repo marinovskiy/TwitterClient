@@ -9,8 +9,8 @@ import ua.marinovskiy.twitterclient.utils.Prefs;
 public class MyApplication extends Application {
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "wM4pJzqAZUH9pubUQ9X0Tj5hv";
-    private static final String TWITTER_SECRET = "JTPikUb9GI2xzbgtWpTABaEtRJdNiIsuiGQmAxk9GnIL1NSXtq";
+    public static final String TWITTER_KEY = "wM4pJzqAZUH9pubUQ9X0Tj5hv";
+    public static final String TWITTER_SECRET = "JTPikUb9GI2xzbgtWpTABaEtRJdNiIsuiGQmAxk9GnIL1NSXtq";
 
     @Override
     public void onCreate() {

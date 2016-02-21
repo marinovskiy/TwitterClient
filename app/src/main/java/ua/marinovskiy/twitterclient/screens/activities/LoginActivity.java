@@ -59,6 +59,7 @@ public class LoginActivity extends BaseActivity {
 
                     String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
 
                 @Override
