@@ -16,14 +16,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import ua.marinovskiy.twitterclient.R;
+import ua.marinovskiy.twitterclient.models.db.Tweet;
 import ua.marinovskiy.twitterclient.models.network.NetworkTweet;
 import ua.marinovskiy.twitterclient.utils.Utils;
 
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHolder> {
 
-    private List<NetworkTweet> mTweetList;
+    private List<Tweet> mTweetList;
 
-    public TimeLineAdapter(List<NetworkTweet> tweetList) {
+    public TimeLineAdapter(List<Tweet> tweetList) {
         mTweetList = tweetList;
     }
 
@@ -66,14 +67,14 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
         @Bind(R.id.tv_tweet_favorites)
         TextView mTvFavorites;
 
-        NetworkTweet tweet;
+        Tweet tweet;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindTweet(NetworkTweet tweet) {
+        public void bindTweet(Tweet tweet) {
             this.tweet = tweet;
             Glide.with(itemView.getContext())
                     .load(tweet.getUser().getImageUrl())
@@ -81,13 +82,13 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
                     .into(mIvAvatar);
             mTvOwner.setText(tweet.getUser().getName());
             mTvDate.setText(Utils.convertDateTime(tweet.getDate()));
-            mTvMessage.setText(tweet.getText());
-            if (tweet.getExtendedEntities() != null) {
-                mIvImage.setVisibility(View.VISIBLE);
-                Glide.with(itemView.getContext())
-                        .load(tweet.getExtendedEntities().getMediaList().get(0).getImageUrl())
-                        .into(mIvImage);
-            }
+            mTvMessage.setText(tweet.getMessage());
+//            if (tweet.getExtendedEntities() != null) {
+//                mIvImage.setVisibility(View.VISIBLE);
+//                Glide.with(itemView.getContext())
+//                        .load(tweet.getExtendedEntities().getMediaList().get(0).getImageUrl())
+//                        .into(mIvImage);
+//            }
             mTvReTweets.setText(String.valueOf(tweet.getReTweetCount()));
             mTvFavorites.setText(String.valueOf(tweet.getFavoriteCount()));
         }

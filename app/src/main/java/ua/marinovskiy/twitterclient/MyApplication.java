@@ -4,6 +4,8 @@ import android.app.Application;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import ua.marinovskiy.twitterclient.utils.Prefs;
 
 public class MyApplication extends Application {
@@ -18,5 +20,11 @@ public class MyApplication extends Application {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
         Prefs.init(this);
+        RealmConfiguration configuration = new RealmConfiguration.Builder(this)
+                .name("tweetsdb.realm")
+                .schemaVersion(1)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(configuration);
     }
 }

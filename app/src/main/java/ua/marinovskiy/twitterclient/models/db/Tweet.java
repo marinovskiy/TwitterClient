@@ -3,9 +3,13 @@ package ua.marinovskiy.twitterclient.models.db;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Tweet {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-    private int id;
+public class Tweet extends RealmObject {
+
+    @PrimaryKey
+    private long id;
 
     private String message;
 
@@ -15,15 +19,13 @@ public class Tweet {
 
     private int favoriteCount;
 
-    private ArrayList<String> images;
-
     private Date date;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -57,14 +59,6 @@ public class Tweet {
 
     public void setFavoriteCount(int favoriteCount) {
         this.favoriteCount = favoriteCount;
-    }
-
-    public ArrayList<String> getImages() {
-        return images;
-    }
-
-    public void setImages(ArrayList<String> images) {
-        this.images = images;
     }
 
     public Date getDate() {

@@ -1,36 +1,32 @@
 package ua.marinovskiy.twitterclient.screens.activities;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.Bind;
+import io.realm.RealmChangeListener;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ua.marinovskiy.twitterclient.R;
 import ua.marinovskiy.twitterclient.api.RequestManager;
+import ua.marinovskiy.twitterclient.models.db.Tweet;
 import ua.marinovskiy.twitterclient.models.network.NetworkTweet;
 import ua.marinovskiy.twitterclient.ui.adapters.TimeLineAdapter;
-import ua.marinovskiy.twitterclient.utils.Prefs;
+import ua.marinovskiy.twitterclient.utils.DbManager;
+import ua.marinovskiy.twitterclient.utils.ModelConverter;
 import ua.marinovskiy.twitterclient.utils.Utils;
 
 public class MainActivity extends BaseActivity {
@@ -59,6 +55,16 @@ public class MainActivity extends BaseActivity {
     TextView mTvUserName;*/
 
     private Snackbar mSnackbar;
+
+    private RealmResults<Tweet> mTweets;
+
+    private final RealmChangeListener mRealmChangeListener = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            if (mTweets != null && mTweets.isLoaded())
+            updateUI(mTweets);
+        }
+    };
 
     @Override
     protected int getLayoutId() {
@@ -100,10 +106,11 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });*/
+        fetchTweetsFromDb();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (Utils.hasInternet(getApplicationContext())) {
             setProgressVisibility(true);
-            fetchTweets();
+            fetchTweetsFromNetwork();
         } else {
             Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -112,9 +119,17 @@ public class MainActivity extends BaseActivity {
                 .setAction("RELOAD", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fetchTweets();
+                        fetchTweetsFromNetwork();
                     }
                 });
+    }
+
+    @Override
+    protected void onPause() {
+        if (mTweets != null) {
+            mTweets.removeChangeListener(mRealmChangeListener);
+        }
+        super.onPause();
     }
 
     @Override
@@ -125,12 +140,14 @@ public class MainActivity extends BaseActivity {
         }*/
     }
 
-    private void fetchTweets() {
+    private void fetchTweetsFromNetwork() {
         RequestManager.getInstance().userTimeLine().enqueue(new Callback<List<NetworkTweet>>() {
             @Override
             public void onResponse(Response<List<NetworkTweet>> response) {
                 if (response.body() != null) {
-                    updateUI(response.body());
+                    List<Tweet> tweetList = ModelConverter.toTweetsList(response.body());
+                    DbManager.saveTweets(tweetList);
+                    //updateUI(tweetList);
                 } else {
                     Log.e(TAG, "Error in onResponse" + response.errorBody());
                     setProgressVisibility(false);
@@ -147,7 +164,12 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void updateUI(List<NetworkTweet> tweetList) {
+    private void fetchTweetsFromDb() {
+        mTweets = DbManager.getTweets();
+        mTweets.addChangeListener(mRealmChangeListener);
+    }
+
+    private void updateUI(List<Tweet> tweetList) {
         mRecyclerView.setAdapter(new TimeLineAdapter(tweetList));
         setProgressVisibility(false);
     }
